@@ -8,6 +8,7 @@ class Members(models.Model):
     car_number = models.CharField(max_length=15,blank=False,null=False,default='abc12')
     phone_number = models.CharField(max_length=15,blank=True)
     email_id = models.EmailField(blank=True)
+    date_added = models.DateField(auto_now_add=False,blank=True,null=True)
     four_wheeler = models.BooleanField(blank=True,default=True) 
     exit_allow = models.BooleanField(blank=False,null=False,default=True)
 

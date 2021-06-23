@@ -108,7 +108,7 @@
     </div>
 </div>
 
-<div id='entry-msg' class="msg text-center">
+<div id='add-msg' class="msg text-center">
     <p>New Member added succesfully</p>
 </div>
 
@@ -201,8 +201,8 @@
             document.getElementById('add-msg').style.top = '10px'
             setTimeout(()=>{
                 document.getElementById('add-msg').style.top = '-50px'
+                get_members_data()
             },4000)
-            get_members_data()
         })
     }
 
