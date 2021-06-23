@@ -10,4 +10,5 @@ urlpatterns = [
     path('api/add-entry',view.add_vehicle_entry),
     path('api/get-members-data',view.get_members),
     path('api/add-members-data',view.add_member),
+    path('api/search-member',view.search_member),
 ]

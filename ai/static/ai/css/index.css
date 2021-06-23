@@ -12,15 +12,20 @@ a{
 #navbar .menu-items div{
     line-height: 62.4px;
 }
-button{
+.button{
     padding: 10px;
     text-align: center;
     background-color: rgb(66, 133, 244);
-    color: #fefefe;
+    color: #fefefe!important;
     outline: none;
     border: none;
     border-radius: 5px;
     box-shadow: 0 6px 30px rgba(66, 134, 244, 0.3);
+}
+#serachMemberBtn{
+    background-color: transparent;
+    border: 2px solid #fefefe;
+    line-height: normal;
 }
 .member-vehicle-false{
     background-color: rgb(243, 64, 64);
@@ -65,4 +70,17 @@ button{
     font-weight: bold;
     transition: all 2s ease-in-out;
     z-index: 100;
+}
+#error-msg{
+    background-color: rgb(253, 42, 42);
+}
+.mem-data{
+    background-color: #4285f4;
+    border-radius: 5px;
+    box-shadow: 0 6px 30px rgba(66, 66, 66, 0.1);
+    color: #fefefe!important;
+}
+.mem-data a{
+    color: #fefefe!important;
+    font-weight: bolder;
 }

@@ -1,9 +1,10 @@
+import re
 from django.shortcuts import render
 from rest_framework import serializers
 
 from .models import Members,Vehicles
 from .serializers import memberSerializer,vehicleSerializer
-from rest_framework.decorators import api_view
+from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 
 
@@ -111,8 +112,24 @@ def  add_member(request):
         email = data['email']
         address = data['address']
         car = data['type']
+        now = datetime.now()
+        date = now.strftime("%Y-%m-%d")
 
-        Members(owner=owner,flat_address=address,car_number=number,phone_number=phone,email_id=email,four_wheeler=car).save()
+        Members(owner=owner,flat_address=address,car_number=number,phone_number=phone,email_id=email,four_wheeler=car,date_added=date).save()
         return Response({'action':True})
     except:
         return Response({"action":False})
+
+
+@api_view(['POST'])
+def search_member(request):
+    number = request.data['number']
+
+    try:
+        member = Members.objects.get(car_number=number)
+        serializer = memberSerializer(member)
+        data = serializer.data
+        data['action'] = True
+        return Response(data)
+    except:
+        return Response({'action':False})
