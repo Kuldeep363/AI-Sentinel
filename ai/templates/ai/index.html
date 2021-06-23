@@ -1,0 +1,320 @@
+{% extends 'ai/base.html' %}
+{% load static %}
+
+{% block links %}
+    <link rel="stylesheet" href="{% static 'ai/css/index.css' %}">
+{% endblock %}
+
+{% block page_title %} <title>AI Sentinel</title>  {% endblock %}
+
+{% block container %}
+
+<!-- header -->
+<div style="background-color: rgb(66, 133, 244);display: block;" class="p-1">
+    <h1 class="text-center m-3" style="color: #fefefe;">AI Sentinel</h1>
+</div>
+
+
+<div class="row m-0 mt-5">
+    <div class="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6 text-left">
+        <h3>Entry Gate</h3>
+        <Video id="video"  width="640" height="480"  autoplay></Video><br>
+        <button id="snap">Snap photo</button>
+        <button id="enter">Enter details</button>
+    </div>
+    <div class="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+        <h3>Exit Gate</h3>
+        <Video id="video" width="640" height="480" autoplay></Video>
+    </div>
+</div>
+<div class="row m-0 justify-content-center mb-5">
+    <audio src="{% static 'ai/assets/alert.mp3' %}" loop style="display: hidden;" id="alert-sound"></audio>
+    <div id="alert" class="justify-content-between">
+        <div id="alert-text">
+            <h4>⚠️  Unauthorized vehicle  ⚠️</h4>
+        </div>
+        <div class="ml-2">
+            <button id="alert-off" data-toggle="modal" data-target="#visitorsModal">Check</button>
+        </div>
+    </div>
+</div>
+<canvas id="canvas" width="640" height ="480" style="display: hidden;"></canvas>
+<div class="row m-0 mt-5">
+    <h2>Vehicles details</h2>
+    <div class="table-responsive">
+        <table class="table table-hover text-center" id="vehicles-data">
+            <thead>
+              <tr>
+                <th scope="col">S.No.</th>
+                <th scope="col">Vehicle Type</th>
+                <th scope="col">Vehicle Number</th>
+                <th scope="col">Owner Name</th>
+                <th scope="col">Entry Date</th>
+                <th scope="col">Entry Timing</th>
+                <th scope="col">Exit Date</th>
+                <th scope="col">Exit Timing</th>
+                <th scope="col">Phone Number</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+    </div>
+</div>
+
+<!-- modal for visitors -->
+<div class="modal fade" id="visitorsModal" tabindex="-1" role="dialog" aria-labelledby="visibleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Visitors Entry</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <p>Do enquiry from visitors before allowing them to enter in society. Allow only when it is important!</p>
+            <form id="visitorForm">
+                <div class="form-group">
+                    <label for="car-number" class="col-form-label">Car Number</label>
+                    <input type="text" class="form-control" id="car-number" required readonly>
+                </div>
+                <div class="form-group">
+                    <label for="name" class="col-form-label">Name</label>
+                    <input type="text" class="form-control" id="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone" class="col-form-label">Phone Number</label>
+                    <input type="text" class="form-control" id="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="purpose" class="col-form-label">Purpose of Visit</label>
+                    <input type="text" class="form-control" id="purpose" required>
+                </div>
+                <div class="form-group">
+                    <p>Vehicle Type</p>
+                    <input type="radio" id="two" name="type" value="false">
+                    <label for="two">Two Wheeler</label><br>
+                    <input type="radio" id="four" name="type" value="true">
+                    <label for="four">Four Wheeler</label><br>
+                </div>
+                <button data-dismiss="modal" id="enterDetailsBtn" style="width: 100%;" class="text-center m-2">Allow Entry</button>
+                <button data-dismiss="modal" style="width: 100%;background-color: rgb(243, 64, 64);" class="m-2 text-center">Deny Entery</button>
+              </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div id='entry-msg' class="msg text-center">
+    <p>Vehicle entry data entered succesfully</p>
+</div>
+<div id='exit-msg' class="msg text-center">
+    <p>Vehicle exit data entered succesfully</p>
+</div>
+
+
+<script>
+
+        let video = document.getElementById('video')
+
+        if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia){
+            navigator.mediaDevices.getUserMedia({video:true}).then((stream)=>{
+                video.srcObject = stream;
+                video.play();
+            })
+        }
+
+        let canvas = document.getElementById('canvas');
+        let context = canvas.getContext('2d')
+        // let imageData;
+        // function draw() {
+        //     // document.getElementById('snap').addEventListener('click',()=>{
+        //         context.drawImage(video,0,0)
+        //         imageData = context.getImageData(0,0,640,480);
+        //     // });
+        // }
+        document.getElementById('enter').addEventListener('click',get_car_number)
+        document.getElementById('alert-off').addEventListener('click',()=>{
+            document.getElementById('alert').style.display = 'none'
+            document.getElementById('alert-sound').pause()
+        })
+
+        // CSRF TOKEN
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        csrf_token = getCookie('csrftoken')
+
+        vehicles_list = []
+
+        function get_vehicles_data(){
+            let table = document.querySelector('#vehicles-data tbody');
+            table.innerHTML = ''
+            let url = 'http://127.0.0.1:8000/api/get-vehicles-data'
+
+            fetch(url)
+            .then((resp)=>resp.json())
+            .then((data)=>{
+                console.log('Data:',data)
+                let list = data
+                let sn = 0 
+                let vehicle_type = '🚗'
+                for(let i=0; i<list.length;i++){
+                    // try{
+                    //     document.getElementById(`data-row=${i}`).remove()
+                    // }
+                    // catch(err){
+
+                    // }
+                    console.log(list[i])
+                    sn = i+1
+                    vehicle_type = '🚗'
+                    if(!list[i].four_wheeler){
+                        vehicle_type = '🏍️'
+
+                    }
+                    let car = `
+                        <tr id=" data-row-${i}" class="text-center member-vehicle-${list[i].member}">
+                            <td>${sn}</td>
+                            <td>${vehicle_type}</td>
+                            <td>${list[i].car_number}</td>
+                            <td>${list[i].owner}</td>
+                            <td>${list[i].entry_date}</td>
+                            <td>${list[i].entry_timing}</td>
+                            <td>${list[i].exit_date}</td>
+                            <td>${list[i].exit_timing}</td>
+                            <td><a href="tel:${list[i].phone_number}">${list[i].phone_number}</a></td>
+                        </tr>
+                    `
+                    table.innerHTML+=car;
+                }
+
+                if(vehicles_list.length > list.length){
+                    for(let i=list.length;i<vehicles_list.length;i++){
+                        document.getElementById(`data-row-${i}`).remove()
+                    }
+                }
+                vehicles_list = list
+            })
+            
+        }
+        
+        let car_number = ''
+
+
+        function add_members_entry(number){
+            let url = 'http://127.0.0.1:8000/api/add-entry'
+
+            
+            fetch(url,{
+                method:'POST',
+                headers:{
+                    'Content-type':'application/json',
+                    'X-CSRFToken':csrf_token
+                },
+                body:JSON.stringify({
+                    'number':number,
+                })
+            })
+            .then((resp)=>resp.json())
+            .then((data)=>{
+                console.log(data['action'])
+                document.getElementById('entry-msg').style.top = '10px'
+                setTimeout(()=>{
+                    document.getElementById('entry-msg').style.top = '-50px'
+                },4000)
+                get_vehicles_data()
+            })
+        }
+
+
+        function get_car_number(){
+
+            const base64Canvas = canvas.toDataURL("image/png");
+            let url = "http://127.0.0.1:8000/api/get-img"
+            // console.log(base64Canvas)
+
+            fetch(url,{
+                method:'POST',
+                headers:{
+                    "Content-type":'application/json',
+                    "X-CSRFToken":csrf_token
+                },
+                body:JSON.stringify({
+                    'img':base64Canvas
+                })
+            })
+            .then((resp)=>resp.json())
+            .then((data)=>{
+                console.log(data)
+                if(!data['permission']){
+                    console.log('visitors')
+                    document.getElementById('alert').style.display='flex'
+                    document.getElementById('alert-sound').play()
+                    
+                    document.getElementById('car-number').value = data['number']
+                }
+                else{
+                    add_members_entry(data['number'])
+                }
+            })
+
+        }
+
+        
+        function add_visitors_entry(){
+            let url = 'http://127.0.0.1:8000/api/add-entry'
+
+            let type = (document.querySelector('input[name="type"]:checked').value == 'true')
+            
+            fetch(url,{
+                method:'POST',
+                headers:{
+                    'Content-type':'application/json',
+                    'X-CSRFToken':csrf_token
+                },
+                body:JSON.stringify({
+                    'number':document.getElementById('car-number').value,
+                    name:document.getElementById('name').value,
+                    phone:document.getElementById('phone').value,
+                    purpose:document.getElementById('purpose').value,
+                    type:type
+                })
+            })
+            .then((resp)=>resp.json())
+            .then((data)=>{
+                console.log(data['action'])
+                document.getElementById('entry-msg').style.top = '10px'
+                setTimeout(()=>{
+                    document.getElementById('entry-msg').style.top = '-50px'
+                },4000)
+                get_vehicles_data()
+            })
+        }
+
+
+        window.onload = ()=>{
+            get_vehicles_data()
+            document.getElementById('snap').addEventListener('click',()=>{
+                context.drawImage(video,0,0)
+                imageData = context.getImageData(0,0,640,480);
+            });
+
+            document.getElementById('enterDetailsBtn').addEventListener('click',add_visitors_entry)
+        };
+    // }
+</script>
+{% endblock %}
