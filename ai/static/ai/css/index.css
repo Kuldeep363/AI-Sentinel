@@ -5,10 +5,13 @@
 }
 a{
     text-decoration: none!important;
-    color: rgb(66, 133, 244);
-    font-weight: bold;
 }
-
+#navbar a{
+    color: #fefefe!important;
+}
+#navbar .menu-items div{
+    line-height: 62.4px;
+}
 button{
     padding: 10px;
     text-align: center;

@@ -18,6 +18,10 @@ def home(request):
     return render(request,'ai/index.html')
 
 
+def members(request):
+    return render(request,'ai/members.html')
+
+
 @api_view(['GET'])
 def viewData(request):
     vehicles = Vehicles.objects.all().order_by('-id')
@@ -62,6 +66,12 @@ def get_image(request):
     return Response({"permission":permission,"number":number_plate})
 
 
+@api_view(['GET'])
+def get_members(request):
+    members = Members.objects.all()
+    serializer = memberSerializer(members,many  =True)
+    return Response(serializer.data)
+
 @api_view(['POST'])
 def add_vehicle_entry(request):
     data = request.data
@@ -90,3 +100,19 @@ def add_vehicle_entry(request):
         Vehicles(owner=owner,car_number=number,entry_date=date,entry_timing=entry_time,phone_number=phone,member=mem,four_wheeler=car_type,purpose=purpose).save()
     
     return Response({'action':True})
+
+@api_view(['POST'])
+def  add_member(request):
+    try:
+        data = request.data 
+        owner = data['name']
+        number = data['number']
+        phone = data['phone']
+        email = data['email']
+        address = data['address']
+        car = data['type']
+
+        Members(owner=owner,flat_address=address,car_number=number,phone_number=phone,email_id=email,four_wheeler=car).save()
+        return Response({'action':True})
+    except:
+        return Response({"action":False})

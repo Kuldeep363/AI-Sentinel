@@ -1,0 +1,218 @@
+{% extends 'ai/base.html' %}
+{% load static %}
+
+{% block links %}
+    <link rel="stylesheet" href="{% static 'ai/css/index.css' %}">
+{% endblock %}
+
+{% block page_title %} <title>Members - AI Sentinel</title>  {% endblock %}
+
+{% block container %}
+
+    <!-- Navbar -->
+<div class="row m-0 bg-primary justify-content-between" id="navbar">
+    <div class="logo m-2 ml-5">
+        <a href="#">
+            <h2>AI Sentinel</h2>
+        </a>
+    </div>
+    <div class="menu-items d-flex mr-5" >
+        <div class="mr-5" >
+            <a href="/">
+                Home
+            </a>
+        </div>
+        <div class="ml-2" style="font-weight: bold;">
+            <a href="/members">
+                Members
+            </a>
+        </div>
+    </div>
+
+</div>
+
+  <!-- Navbar End -->
+
+
+  <!-- Members data -->
+
+  <div class=" mt-5 mb-2 d-flex justify-content-between">
+    <div>
+        <h2  class="ml-2">Members details</h2>
+    </div>
+    <div class="mr-5">
+        <button id="add-member" data-toggle="modal" data-target="#addMemberModal">Add Member +</button>
+    </div>
+  </div>
+  <table class="table table-hover text-center" id="members-data">
+    <thead>
+      <tr>
+        <th scope="col">S.No.</th>
+        <th scope="col">Vehicle Type</th>
+        <th scope="col">Vehicle Number</th>
+        <th scope="col">Owner Name</th>
+        <th scope="col">Phone Number</th>
+        <th scope="col">Email ID</th>
+        <th scope="col">Flat Number</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+
+  <!-- modal for adding member -->
+
+  <div class="modal fade" id="addMemberModal" tabindex="-1" role="dialog" aria-labelledby="visibleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add Member</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <p>Add new member of society!</p>
+            <form id="visitorForm">
+                <div class="form-group">
+                    <label for="car-number" class="col-form-label">Car Number</label>
+                    <input type="text" class="form-control" id="car-number" required >
+                </div>
+                <div class="form-group">
+                    <label for="name" class="col-form-label">Name</label>
+                    <input type="text" class="form-control" id="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone" class="col-form-label">Phone Number</label>
+                    <input type="text" class="form-control" id="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="col-form-label">Email ID</label>
+                    <input type="text" class="form-control" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="flat-address" class="col-form-label">Flat Address</label>
+                    <input type="text" class="form-control" id="flat-address" required>
+                </div>
+                <div class="form-group">
+                    <p>Vehicle Type</p>
+                    <input type="radio" id="two" name="type" value="false">
+                    <label for="two">Two Wheeler</label><br>
+                    <input type="radio" id="four" name="type" value="true">
+                    <label for="four">Four Wheeler</label><br>
+                </div>
+                <button data-dismiss="modal" id="addMemberBtn" style="width: 100%;" class="text-center m-2">Add Member</button>
+            </form>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div id='entry-msg' class="msg text-center">
+    <p>New Member added succesfully</p>
+</div>
+
+  <script>
+
+
+    // CSRF TOKEN
+    function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    csrf_token = getCookie('csrftoken')
+
+    function get_members_data(){
+        let url = 'http://127.0.0.1:8000/api/get-members-data'
+
+            let table = document.querySelector('#members-data tbody');
+            table.innerHTML = ''
+
+            fetch(url)
+            .then((resp)=>resp.json())
+            .then((data)=>{
+                console.log('Data:',data)
+                let list = data
+                let sn = 0 
+                let vehicle_type = '🚗'
+                for(let i=0; i<list.length;i++){
+                    
+                    console.log(list[i])
+                    sn = i+1
+                    vehicle_type = '🚗'
+                    if(!list[i].four_wheeler){
+                        vehicle_type = '🏍️'
+
+                    }
+                    let car = `
+                        <tr id=" data-row-${i}" class="text-center member-vehicle-${list[i].member}">
+                            <td>${sn}</td>
+                            <td>${vehicle_type}</td>
+                            <td>${list[i].car_number}</td>
+                            <td>${list[i].owner}</td>
+                            <td><a href="tel:${list[i].phone_number}">${list[i].phone_number}</a></td>
+                            <td><a href="mailto:${list[i].email_id}">${list[i].email_id}</a></td>
+                            <td>${list[i].flat_address}</td>
+                        </tr>
+                    `
+                    table.innerHTML+=car;
+                }
+
+                // vehicles_list = list
+            })
+            
+        }
+        
+
+    function add_members_entry(number){
+        let url = 'http://127.0.0.1:8000/api/add-members-data'
+
+        let type = (document.querySelector('input[name="type"]:checked').value == 'true')
+
+        fetch(url,{
+            method:'POST',
+            headers:{
+                'Content-type':'application/json',
+                'X-CSRFToken':csrf_token
+            },
+            body:JSON.stringify({
+                'number':document.getElementById('car-number').value,
+                'name':document.getElementById('name').value,
+                'phone':document.getElementById('phone').value,
+                'email':document.getElementById('email').value,
+                'address':document.getElementById('flat-address').value,
+                'type':type
+            })
+        })
+        .then((resp)=>resp.json())
+        .then((data)=>{
+            console.log(data['action'])
+            document.getElementById('add-msg').style.top = '10px'
+            setTimeout(()=>{
+                document.getElementById('add-msg').style.top = '-50px'
+            },4000)
+            get_members_data()
+        })
+    }
+
+    
+
+    window.onload = ()=>{
+            get_members_data()
+            document.getElementById('addMemberBtn').addEventListener('click',add_members_entry)
+        };
+
+  </script>
+
+{% endblock %}

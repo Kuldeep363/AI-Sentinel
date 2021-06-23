@@ -9,10 +9,30 @@
 
 {% block container %}
 
-<!-- header -->
-<div style="background-color: rgb(66, 133, 244);display: block;" class="p-1">
-    <h1 class="text-center m-3" style="color: #fefefe;">AI Sentinel</h1>
+<!-- Navbar -->
+<div class="row m-0 bg-primary justify-content-between" id="navbar">
+    <div class="logo m-2 ml-5">
+        <a href="#">
+            <h2>AI Sentinel</h2>
+        </a>
+    </div>
+    <div class="menu-items d-flex mr-5" >
+        <div class="mr-5" style="font-weight: bold;">
+            <a href="">
+                Home
+            </a>
+        </div>
+        <div class="ml-2">
+            <a href="/members">
+                Members
+            </a>
+        </div>
+    </div>
+
 </div>
+
+  <!-- Navbar End -->
+
 
 
 <div class="row m-0 mt-5">
@@ -25,8 +45,12 @@
     <div class="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
         <h3>Exit Gate</h3>
         <Video id="video" width="640" height="480" autoplay></Video>
+        <button id="snap">Snap photo</button>
+        <button id="enter">Enter details</button>
     </div>
 </div>
+
+<!-- alert -->
 <div class="row m-0 justify-content-center mb-5">
     <audio src="{% static 'ai/assets/alert.mp3' %}" loop style="display: hidden;" id="alert-sound"></audio>
     <div id="alert" class="justify-content-between">
@@ -38,9 +62,13 @@
         </div>
     </div>
 </div>
+
+<!-- canvas -->
 <canvas id="canvas" width="640" height ="480" style="display: hidden;"></canvas>
+
+<!-- vehicles data -->
 <div class="row m-0 mt-5">
-    <h2>Vehicles details</h2>
+    <h2 class="mb-2">Vehicles details</h2>
     <div class="table-responsive">
         <table class="table table-hover text-center" id="vehicles-data">
             <thead>
@@ -104,7 +132,7 @@
         </div>
       </div>
     </div>
-  </div>
+</div>
 
 <div id='entry-msg' class="msg text-center">
     <p>Vehicle entry data entered succesfully</p>
