@@ -12,7 +12,7 @@
     <!-- Navbar -->
 <div class="row m-0 bg-primary justify-content-between" id="navbar">
     <div class="logo m-2 ml-5">
-        <a href="/">
+        <a href="#">
             <h2>AI Sentinel</h2>
         </a>
     </div>
@@ -22,25 +22,16 @@
                 Home
             </a>
         </div>
-        <div class="ml-2 mr-5" style="font-weight: bold;">
+        <div class="ml-2" style="font-weight: bold;">
             <a href="/members">
                 Members
             </a>
         </div>
-        <div class="ml-2 m-auto">
-            <form class="form-inline">
-                <input class="form-control mr-sm-2" id="search-number" type="search" placeholder="Search with car number" aria-label="Search" required>
-                <button class="button my-2 my-sm-0" id="serachMemberBtn" type="submit">Search</button>
-            </form>
-        </div>
     </div>
-    
 
 </div>
 
   <!-- Navbar End -->
-
-  <button  data-toggle="modal" data-target="#searchMemberModal" id="show-mem" style="position: absolute;left: 0;top: 0;z-index: -10;">Search</button>
 
 
   <!-- Members data -->
@@ -50,7 +41,7 @@
         <h2  class="ml-2">Members details</h2>
     </div>
     <div class="mr-5">
-        <button id="add-member" class="button" data-toggle="modal" data-target="#addMemberModal">Add Member +</button>
+        <button id="add-member" data-toggle="modal" data-target="#addMemberModal">Add Member +</button>
     </div>
   </div>
   <table class="table table-hover text-center" id="members-data">
@@ -63,7 +54,6 @@
         <th scope="col">Phone Number</th>
         <th scope="col">Email ID</th>
         <th scope="col">Flat Number</th>
-        <th scope="col">Added On</th>
       </tr>
     </thead>
     <tbody>
@@ -72,7 +62,7 @@
 
   <!-- modal for adding member -->
 
-<div class="modal fade" id="addMemberModal" tabindex="-1" role="dialog" aria-labelledby="visibleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="addMemberModal" tabindex="-1" role="dialog" aria-labelledby="visibleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -111,7 +101,7 @@
                     <input type="radio" id="four" name="type" value="true">
                     <label for="four">Four Wheeler</label><br>
                 </div>
-                <button data-dismiss="modal" id="addMemberBtn" style="width: 100%;" class="button text-center m-2">Add Member</button>
+                <button data-dismiss="modal" id="addMemberBtn" style="width: 100%;" class="text-center m-2">Add Member</button>
             </form>
         </div>
       </div>
@@ -121,29 +111,6 @@
 <div id='add-msg' class="msg text-center">
     <p>New Member added succesfully</p>
 </div>
-<div id='error-msg' class="msg text-center">
-    <p>Something went wrong! Try again</p>
-</div>
-
-  <!-- modal for member searched -->
-
-  <div class="modal fade" id="searchMemberModal" tabindex="-1" role="dialog" aria-labelledby="visibleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Member Data</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body row m-0 mt-5 justify-content-around" id="mem-data-wrapper">
-            
-        </div>
-        <button data-dismiss="modal" style="background-color: rgb(243, 64, 64);" class="button m-2 text-center">Close</button>
-      </div>
-    </div>
-</div>
-
 
   <script>
 
@@ -197,7 +164,6 @@
                             <td><a href="tel:${list[i].phone_number}">${list[i].phone_number}</a></td>
                             <td><a href="mailto:${list[i].email_id}">${list[i].email_id}</a></td>
                             <td>${list[i].flat_address}</td>
-                            <td>${list[i].date_added}</td>
                         </tr>
                     `
                     table.innerHTML+=car;
@@ -232,90 +198,19 @@
         .then((resp)=>resp.json())
         .then((data)=>{
             console.log(data['action'])
-            if(data['action']){
-                document.getElementById('add-msg').style.top = '10px'
-                setTimeout(()=>{
-                    document.getElementById('add-msg').style.top = '-50px'
-                    get_members_data()
-                },4000)
-            }
-            else{
-                document.getElementById('error-msg').style.top = '10px'
-                setTimeout(()=>{
-                    document.getElementById('error-msg').style.top = '-50px'
-                    // get_members_data()
-                },4000)
-                
-            }
+            document.getElementById('add-msg').style.top = '10px'
+            setTimeout(()=>{
+                document.getElementById('add-msg').style.top = '-50px'
+                get_members_data()
+            },4000)
         })
     }
 
-    function search_member(e){
-        e.preventDefault()
-        let url = 'http://127.0.0.1:8000/api/search-member'
-
-        fetch(url,{
-            method:'POST',
-            headers:{
-                'Content-type':'application/json',
-                'X-CSRFToken':csrf_token
-            },
-            body:JSON.stringify({
-                'number':document.getElementById('search-number').value
-            })
-        })
-        .then((resp)=>resp.json())
-        .then((data)=>{
-            let member = document.getElementById('mem-data-wrapper')
-            member.innerHTML = ''
-            if(data['action']){
-
-                let vehicle_type = '🚗'
-                if(!data.four_wheeler){
-                    vehicle_type = '🏍️'
-                }
-                let mem = `
-                <div class="text-center mem-data p-3 m-3 col-12 col-sm-12 col-md-5 col-lg-5 col-xl-5">
-                    <h4>Owner name</h4>
-                    <p>${data.owner}</p>
-                </div>
-                <div class="text-center mem-data p-3 m-3 col-12 col-sm-12 col-md-5 col-lg-5 col-xl-5">
-                    <h4>Vehicle Number </h4>
-                    <p>${data.car_number} ${vehicle_type}</p>
-                </div>
-                <div class="text-center mem-data p-3 m-3 col-12 col-sm-12 col-md-5 col-lg-5 col-xl-5">
-                    <h4>Phone Number</h4>
-                    <a href="tel:${data.phone_number}">
-                        <p>📞 ${data.phone_number}</p>    
-                    </a>
-                </div>
-                <div class="text-center mem-data p-3 m-3 col-12 col-sm-12 col-md-5 col-lg-5 col-xl-5">
-                    <h4>Email ID</h4>
-                    <a href="mailto:${data.email_id}">
-                        <p>📧 ${data.email_id}</p>    
-                    </a>
-                </div>
-                <div class="text-center mem-data p-3 m-3 col-12 col-sm-12 col-md-10 col-lg-10 col-xl-10">
-                    <h4>Flat Number</h4>
-                    <a href="mailto:${data.flat_address}">
-                        <p>${data.flat_address}</p>    
-                    </a>
-                </div>
-                `
-                member.innerHTML = mem
-            }else{
-                member.innerHTML ='Member not found ⚠️'
-            }
-            document.getElementById('show-mem').click()
-        
-        }
-        )
-    }
+    
 
     window.onload = ()=>{
             get_members_data()
             document.getElementById('addMemberBtn').addEventListener('click',add_members_entry)
-            document.getElementById('serachMemberBtn').addEventListener('click',search_member)
         };
 
   </script>
