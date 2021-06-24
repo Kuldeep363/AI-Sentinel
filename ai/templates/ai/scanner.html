@@ -9,9 +9,10 @@
 
 {% block container %}
 
+<!-- Navbar -->
 <div class="row m-0 bg-primary justify-content-between" id="navbar">
     <div class="logo m-2 ml-5">
-        <a href="#">
+        <a href="/">
             <h2>AI Sentinel</h2>
         </a>
     </div>
@@ -44,5 +45,51 @@
     </div>
 
 </div>
+
+<!-- video -->
+<div class="row m-0 mt-3 justify-content-center">
+    <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6">
+        <video id="scanner" style="width: 100%;" autoplay></video>
+        <button id="snap" class="button" style="width: 100%;">Click photo</button>
+    </div>
+</div>
+
+<div class="mt-3">
+    <canvas id="scan-img" width="640" height="640"></canvas>
+</div>
+
+
+
+
+
+<div class="modal fade" id="searchMemberModal" tabindex="-1" role="dialog" aria-labelledby="visibleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Vehicle Data</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body row m-0 mt-5 justify-content-around" id="mem-data-wrapper">
+            
+        </div>
+        <button data-dismiss="modal" style="background-color: rgb(243, 64, 64);" class="button m-2 text-center">Close</button>
+      </div>
+    </div>
+</div>
+
+
+<button  data-toggle="modal" data-target="#searchMemberModal" id="show-vehicle" style="position: absolute;left: 0;top: 0;z-index: -10;">Search</button>
+
+
+
+
+
+
+
+
+<script src="{% static 'ai/js/scan.js' %}"></script>
+
 
 {% endblock %}

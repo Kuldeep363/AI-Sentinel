@@ -13,4 +13,5 @@ urlpatterns = [
     path('api/add-members-data',view.add_member),
     path('api/search-member',view.search_member),
     path('api/add-exit',view.exit_details),
+    path('api/search-vehicle',view.search_vehicle),
 ]
