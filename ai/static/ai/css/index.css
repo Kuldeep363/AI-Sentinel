@@ -31,7 +31,7 @@ a{
     background-color: rgb(243, 64, 64);
     color: #fefefe;
 }
-#alert{
+#entry-alert, #exit-alert{
     display: none;
 }
 #alert-text{

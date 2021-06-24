@@ -3,7 +3,8 @@ from . import views as view
 
 urlpatterns = [
     path('',view.home,name='home'),
-    path('members',view.members,name='home'),
+    path('members',view.members,name='member'),
+    path('scan',view.scanner,name='scanner'),
     path('api/get-vehicles-data',view.viewData),
     path('api/check-member',view.check_member),
     path('api/get-img',view.get_image),
@@ -11,4 +12,5 @@ urlpatterns = [
     path('api/get-members-data',view.get_members),
     path('api/add-members-data',view.add_member),
     path('api/search-member',view.search_member),
+    path('api/add-exit',view.exit_details),
 ]

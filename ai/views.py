@@ -23,6 +23,10 @@ def members(request):
     return render(request,'ai/members.html')
 
 
+def scanner(request):
+    return render(request,'ai/scanner.html')
+
+
 @api_view(['GET'])
 def viewData(request):
     vehicles = Vehicles.objects.all().order_by('-id')
@@ -133,3 +137,41 @@ def search_member(request):
         return Response(data)
     except:
         return Response({'action':False})
+
+@api_view(['POST'])
+def exit_details(request):
+    img = request.data['img']
+
+    payload = { 'isOverlayRequired':True,
+                'apikey':'fac41c9c0888957',
+                'language':'eng',
+                'scale': True,
+                'OCREngine':2,
+                'base64Image':img
+            }
+    r = requests.post('https://api.ocr.space/parse/image',
+    data=payload,
+    )
+
+    # print(r.content.decode())
+    number = json.loads(r.content.decode())
+    number = number['ParsedResults'][0]['TextOverlay']['Lines'][0]['Words'][0]['WordText']
+    print(number)
+
+
+
+    try:
+        mem = Members.objects.get(car_number=number)
+        if not mem.exit_allow:
+            return Response({'permission':False})
+    except:
+        pass
+    vehicle = Vehicles.objects.filter(car_number=number,exit_timing__isnull=True)
+    if vehicle:
+        now = datetime.now()
+        date = now.strftime("%Y-%m-%d")
+        time = now.strftime("%H:%M:%S")
+        vehicle[0].exit_date = date
+        vehicle[0].exit_timing = time
+        vehicle[0].save()
+    return Response({'permission':True})

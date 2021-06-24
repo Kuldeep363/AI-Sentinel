@@ -1,15 +1,20 @@
 
-        let video = document.getElementById('video')
+        let entry_video = document.getElementById('entry_video')
+        let exit_video = document.getElementById('exit_video')
 
         if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia){
             navigator.mediaDevices.getUserMedia({video:true}).then((stream)=>{
-                video.srcObject = stream;
-                video.play();
+                entry_video.srcObject = stream;
+                entry_video.play();
+                exit_video.srcObject = stream;
+                exit_video.play();
             })
         }
 
-        let canvas = document.getElementById('canvas');
-        let context = canvas.getContext('2d')
+        let entry_canvas = document.getElementById('entry-canvas');
+        let entry_context = entry_canvas.getContext('2d')
+        let exit_canvas = document.getElementById('exit-canvas');
+        let exit_context = exit_canvas.getContext('2d')
         // let imageData;
         // function draw() {
         //     // document.getElementById('snap').addEventListener('click',()=>{
@@ -18,8 +23,14 @@
         //     // });
         // }
         document.getElementById('enter').addEventListener('click',get_car_number)
-        document.getElementById('alert-off').addEventListener('click',()=>{
-            document.getElementById('alert').style.display = 'none'
+        document.getElementById('exit-enter').addEventListener('click',enter_exit_details)
+
+        document.getElementById('entry-alert-off').addEventListener('click',()=>{
+            document.getElementById('entry-alert').style.display = 'none'
+            document.getElementById('alert-sound').pause()
+        })
+        document.getElementById('exit-alert-off').addEventListener('click',()=>{
+            document.getElementById('exit-alert').style.display = 'none'
             document.getElementById('alert-sound').pause()
         })
 
@@ -126,7 +137,7 @@
 
         function get_car_number(){
 
-            const base64Canvas = canvas.toDataURL("image/png");
+            const base64Canvas = entry_canvas.toDataURL("image/png");
             let url = "http://127.0.0.1:8000/api/get-img"
             // console.log(base64Canvas)
 
@@ -145,7 +156,7 @@
                 console.log(data)
                 if(!data['permission']){
                     console.log('visitors')
-                    document.getElementById('alert').style.display='flex'
+                    document.getElementById('entry-alert').style.display='flex'
                     document.getElementById('alert-sound').play()
                     
                     document.getElementById('car-number').value = data['number']
@@ -188,12 +199,46 @@
             })
         }
 
+        function enter_exit_details(){
+            let url = 'http://127.0.0.1:8000/api/add-exit'
+
+            const base64Canvas = exit_canvas.toDataURL("image/png");
+
+            fetch(url,{
+                method:'POST',
+                headers:{
+                    "Content-type":'application/json',
+                    "X-CSRFToken":csrf_token
+                },
+                body:JSON.stringify({
+                    'img':base64Canvas
+                })
+            })
+            .then((resp)=>resp.json())
+            .then((data)=>{
+                console.log(data)
+                if(!data['permission']){
+                    console.log('visitors')
+                    document.getElementById('exit-alert').style.display='flex'
+                    document.getElementById('alert-sound').play()
+                    
+                    // document.getElementById('car-number').value = data['number']
+                }
+                else{
+                    get_vehicles_data()
+                }
+            })
+
+
+        }
 
         window.onload = ()=>{
             get_vehicles_data()
-            document.getElementById('snap').addEventListener('click',()=>{
-                context.drawImage(video,0,0)
-                imageData = context.getImageData(0,0,640,480);
+            document.getElementById('entry-snap').addEventListener('click',()=>{
+                entry_context.drawImage(entry_video,0,0)
+            });
+            document.getElementById('exit-snap').addEventListener('click',()=>{
+                exit_context.drawImage(exit_video,0,0)
             });
 
             document.getElementById('enterDetailsBtn').addEventListener('click',add_visitors_entry)
