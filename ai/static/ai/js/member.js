@@ -104,67 +104,6 @@ function add_members_entry(number){
 }
 
 // serach member
-function search_member(e){
-    e.preventDefault()
-    let url = 'http://127.0.0.1:8000/api/search-member'
-
-    fetch(url,{
-        method:'POST',
-        headers:{
-            'Content-type':'application/json',
-            'X-CSRFToken':csrf_token
-        },
-        body:JSON.stringify({
-            'number':document.getElementById('search-number').value
-        })
-    })
-    .then((resp)=>resp.json())
-    .then((data)=>{
-        let member = document.getElementById('mem-data-wrapper')
-        member.innerHTML = ''
-        if(data['action']){
-
-            let vehicle_type = '🚗'
-            if(!data.four_wheeler){
-                vehicle_type = '🏍️'
-            }
-            let mem = `
-            <div class="text-center mem-data p-3 m-3 col-12 col-sm-12 col-md-5 col-lg-5 col-xl-5">
-                <h4>Owner name</h4>
-                <p>${data.owner}</p>
-            </div>
-            <div class="text-center mem-data p-3 m-3 col-12 col-sm-12 col-md-5 col-lg-5 col-xl-5">
-                <h4>Vehicle Number </h4>
-                <p>${data.car_number} ${vehicle_type}</p>
-            </div>
-            <div class="text-center mem-data p-3 m-3 col-12 col-sm-12 col-md-5 col-lg-5 col-xl-5">
-                <h4>Phone Number</h4>
-                <a href="tel:${data.phone_number}">
-                    <p>📞 ${data.phone_number}</p>    
-                </a>
-            </div>
-            <div class="text-center mem-data p-3 m-3 col-12 col-sm-12 col-md-5 col-lg-5 col-xl-5">
-                <h4>Email ID</h4>
-                <a href="mailto:${data.email_id}">
-                    <p>📧 ${data.email_id}</p>    
-                </a>
-            </div>
-            <div class="text-center mem-data p-3 m-3 col-12 col-sm-12 col-md-10 col-lg-10 col-xl-10">
-                <h4>Flat Number</h4>
-                <a href="mailto:${data.flat_address}">
-                    <p>${data.flat_address}</p>    
-                </a>
-            </div>
-            `
-            member.innerHTML = mem
-        }else{
-            member.innerHTML ='Member not found ⚠️'
-        }
-        document.getElementById('show-mem').click()
-    
-    }
-    )
-}
 
 window.onload = ()=>{
         get_members_data()
