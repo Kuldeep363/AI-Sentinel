@@ -1,7 +1,23 @@
+@font-face {
+    font-family: primary;
+    src: url("primary.ttf");
+}
+@font-face {
+    font-family: secondary;
+    src: url("secondary.ttf");
+}
 *{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: secondary;
+}
+.heading{
+    font-family: primary;
+    font-weight: bold;
+}
+.logo .heading{
+    font-size: 32px;
 }
 a{
     text-decoration: none!important;
@@ -10,7 +26,7 @@ a{
     color: #fefefe!important;
 }
 #navbar .menu-items div{
-    line-height: 62.4px;
+    line-height: 72.5px;
 }
 .button{
     padding: 10px;

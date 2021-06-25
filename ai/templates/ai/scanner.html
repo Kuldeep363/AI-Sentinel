@@ -13,7 +13,8 @@
 <div class="row m-0 bg-primary justify-content-between" id="navbar">
     <div class="logo m-2 ml-5">
         <a href="/">
-            <h2>AI Sentinel</h2>
+            <img src="{% static 'ai/assets/as-logo.png' %}" alt="as logo" style="width: 65px;">
+            <span class="heading">AI Sentinel</span>
         </a>
     </div>
     <div class="menu-items d-flex mr-5" >
@@ -50,23 +51,39 @@
 <div class="row m-0 mt-3 justify-content-center">
     <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6">
         <video id="scanner" style="width: 100%;" autoplay></video>
-        <button id="snap" class="button" style="width: 100%;">Click photo</button>
+        <button data-toggle="modal" data-target="#scanModal" id="snap" class="button" style="width: 100%;">Click photo</button>
     </div>
 </div>
 
-<div class="mt-3">
-    <canvas id="scan-img" width="640" height="640"></canvas>
+<!-- <button data-toggle="modal" data-target="#scanModal" id="snap" class="button" style="width: 100%;">Click photo</button> -->
+
+<!-- vehicl image modal -->
+<div class="modal fade" id="scanModal" tabindex="-1" role="dialog" aria-labelledby="visibleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title heading" id="exampleModalLabel">Vehice Image</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body text-center">
+            <lottie-player src="https://assets8.lottiefiles.com/packages/lf20_c9uz3mrt.json"  background="transparent"  speed="1"  style="width: 640px; height: 480px;position: absolute;display: inline-block;"  loop  autoplay></lottie-player>
+            <canvas id="scan-canvas" width="640" height ="480" ></canvas><br>
+            <button data-dismiss="modal" id="close-img"></button>
+        </div>
+      </div>
+    </div>
 </div>
 
 
-
-
+<!-- vehicle data modal -->
 
 <div class="modal fade" id="searchMemberModal" tabindex="-1" role="dialog" aria-labelledby="visibleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Vehicle Data</h5>
+          <h5 class="modal-title heading" id="exampleModalLabel">Vehicle Data</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -81,7 +98,6 @@
 
 
 <button  data-toggle="modal" data-target="#searchMemberModal" id="show-vehicle" style="position: absolute;left: 0;top: 0;z-index: -10;">Search</button>
-
 
 
 

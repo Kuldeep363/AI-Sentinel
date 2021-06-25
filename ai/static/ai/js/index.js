@@ -22,9 +22,6 @@
         //         imageData = context.getImageData(0,0,640,480);
         //     // });
         // }
-        document.getElementById('enter').addEventListener('click',get_car_number)
-        document.getElementById('exit-enter').addEventListener('click',enter_exit_details)
-
         document.getElementById('entry-alert-off').addEventListener('click',()=>{
             document.getElementById('entry-alert').style.display = 'none'
             document.getElementById('alert-sound').pause()
@@ -126,6 +123,7 @@
             .then((resp)=>resp.json())
             .then((data)=>{
                 console.log(data['action'])
+                document.getElementById('enter').click()
                 document.getElementById('entry-msg').style.top = '10px'
                 setTimeout(()=>{
                     document.getElementById('entry-msg').style.top = '-50px'
@@ -156,6 +154,7 @@
                 console.log(data)
                 if(!data['permission']){
                     console.log('visitors')
+                    document.getElementById('enter').click()
                     document.getElementById('entry-alert').style.display='flex'
                     document.getElementById('alert-sound').play()
                     
@@ -217,15 +216,19 @@
             .then((resp)=>resp.json())
             .then((data)=>{
                 console.log(data)
+                document.getElementById('exit-enter').click()
                 if(!data['permission']){
                     console.log('visitors')
                     document.getElementById('exit-alert').style.display='flex'
                     document.getElementById('alert-sound').play()
                     
-                    // document.getElementById('car-number').value = data['number']
                 }
                 else{
-                    get_vehicles_data()
+                    document.getElementById('exit-msg').style.top = '10px'
+                    setTimeout(()=>{
+                        document.getElementById('exit-msg').style.top = '-50px'
+                        get_vehicles_data()
+                    },4000)
                 }
             })
 
@@ -236,9 +239,11 @@
             get_vehicles_data()
             document.getElementById('entry-snap').addEventListener('click',()=>{
                 entry_context.drawImage(entry_video,0,0)
+                get_car_number()
             });
             document.getElementById('exit-snap').addEventListener('click',()=>{
                 exit_context.drawImage(exit_video,0,0)
+                enter_exit_details()
             });
 
             document.getElementById('enterDetailsBtn').addEventListener('click',add_visitors_entry)

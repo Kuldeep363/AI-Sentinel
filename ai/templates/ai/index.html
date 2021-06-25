@@ -13,7 +13,8 @@
 <div class="row m-0 bg-primary justify-content-between" id="navbar">
     <div class="logo m-2 ml-5">
         <a href="/">
-            <h2>AI Sentinel</h2>
+            <img src="{% static 'ai/assets/as-logo.png' %}" alt="as logo" style="width: 65px;">
+            <span class="heading">AI Sentinel</span>
         </a>
     </div>
     <div class="menu-items d-flex mr-5" >
@@ -52,19 +53,14 @@
 <!-- video -->
 <div class="row m-0 mt-5">
     <div class="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6 text-left">
-        <h3>Entry Gate</h3>
+        <h3 class="heading">Entry Gate</h3>
         <Video id="entry_video"  width="640" height="480"  autoplay></Video><br>
-        <button id="entry-snap" class="button">Snap photo</button>
-        <button id="enter" class="button">Enter details</button> <br>
-        <canvas id="entry-canvas" width="640" height ="480" style="display: hidden;"></canvas>
+        <button data-toggle="modal" data-target="#entryImgModal" id="entry-snap" class="button">Snap photo</button>
     </div>
     <div class="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-        <h3>Exit Gate</h3>
+        <h3 class="heading">Exit Gate</h3>
         <Video id="exit_video" width="640" height="480" autoplay></Video>
-        <button id="exit-snap" class="button">Snap photo</button>
-        <button id="exit-enter" class="button">Enter details</button> <br>
-        <canvas id="exit-canvas" width="640" height ="480" style="display: hidden;"></canvas>
-
+        <button data-toggle="modal" data-target="#exitImgModal" id="exit-snap" class="button">Snap photo</button>
     </div>
 </div>
 
@@ -74,7 +70,7 @@
 <div class="row m-0 justify-content-center mb-5">
     <div id="entry-alert" class="justify-content-between">
         <div id="alert-text">
-            <h4>⚠️  Unauthorized vehicle  ⚠️</h4>
+            <h4 class="heading">⚠️  Unauthorized vehicle  ⚠️</h4>
         </div>
         <div class="ml-2">
             <button class="button" id="entry-alert-off" data-toggle="modal" data-target="#visitorsModal">Check</button>
@@ -86,7 +82,7 @@
 <div class="row m-0 justify-content-center mb-5">
     <div id="exit-alert" class="justify-content-between">
         <div id="alert-text">
-            <h4>⚠️  Exit not allowed  ⚠️</h4>
+            <h4 class="heading">⚠️  Exit not allowed  ⚠️</h4>
         </div>
         <div class="ml-2">
             <button class="button" id="exit-alert-off">Check</button>
@@ -98,7 +94,7 @@
 
 <!-- vehicles data -->
 <div class="row m-0 mt-5">
-    <h2 class="mb-2">Vehicles details</h2>
+    <h2 class="mb-2 heading">Vehicles details</h2>
     <div class="table-responsive">
         <table class="table table-hover text-center" id="vehicles-data">
             <thead>
@@ -125,7 +121,7 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Visitors Entry</h5>
+          <h5 class="modal-title heading" id="exampleModalLabel">Visitors Entry</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -169,6 +165,46 @@
 </div>
 <div id='exit-msg' class="msg text-center">
     <p>Vehicle exit data entered succesfully</p>
+</div>
+
+
+
+<!-- entry modal -->
+<div class="modal fade" id="entryImgModal" tabindex="-1" role="dialog" aria-labelledby="visibleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title heading" id="exampleModalLabel">Vehice Image</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body text-center">
+            <lottie-player src="https://assets8.lottiefiles.com/packages/lf20_c9uz3mrt.json"  background="transparent"  speed="1"  style="width: 640px; height: 480px;position: absolute;display: inline-block;"  loop  autoplay></lottie-player>
+            <canvas id="entry-canvas" width="640" height ="480" style="display: hidden;"></canvas><br>
+            <button data-dismiss="modal" id="enter"  style="background-color: rgb(243, 64, 64);"></button> <br>
+        </div>
+      </div>
+    </div>
+</div>
+
+<!-- exit modal -->
+<div class="modal fade" id="exitImgModal" tabindex="-1" role="dialog" aria-labelledby="visibleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title heading" id="exampleModalLabel">Vehice Image</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body text-center">
+            <lottie-player src="https://assets8.lottiefiles.com/packages/lf20_c9uz3mrt.json"  background="transparent"  speed="1"  style="width: 640px; height: 480px;position: absolute;display: inline-block;"  loop  autoplay></lottie-player>
+            <canvas id="exit-canvas" width="640" height ="480" style="display: hidden;"></canvas><br>
+            <button data-dismiss="modal" id="exit-enter" style="background-color: rgb(243, 64, 64);"></button> <br>
+        </div>
+      </div>
+    </div>
 </div>
 
 

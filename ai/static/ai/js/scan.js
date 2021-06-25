@@ -7,26 +7,26 @@ if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia){
     })
 }
 
-let scan_canvas = document.getElementById('scan-img');
+let scan_canvas = document.getElementById('scan-canvas');
 let scan_context = scan_canvas.getContext('2d')   
 
 
-    // CSRF TOKEN
-    function getCookie(name) {
-        var cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            var cookies = document.cookie.split(';');
-            for (var i = 0; i < cookies.length; i++) {
-                var cookie = cookies[i].trim();
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
+// CSRF TOKEN
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
             }
         }
-        return cookieValue;
     }
+    return cookieValue;
+}
 csrf_token = getCookie('csrftoken')
 
 function search_vehicle(){
@@ -47,6 +47,7 @@ function search_vehicle(){
     })
     .then((resp)=>resp.json())
     .then((data)=>{
+        document.getElementById('close-img').click()
         let member = document.getElementById('mem-data-wrapper')
         member.innerHTML = ''
         if(data['type']!='unknown'){
@@ -70,15 +71,16 @@ function search_vehicle(){
                     <p>📞 ${data.phone_number}</p>    
                 </a>
             </div>
-            <div class="text-center mem-data p-3 m-3 col-12 col-sm-12 col-md-5 col-lg-5 col-xl-5">
+            
+            `
+            if(data['type']=='Member'){
+                mem += `
+                <div class="text-center mem-data p-3 m-3 col-12 col-sm-12 col-md-5 col-lg-5 col-xl-5">
                 <h4>Email ID</h4>
                 <a href="mailto:${data.email_id}">
                     <p>📧 ${data.email_id}</p>    
                 </a>
             </div>
-            `
-            if(data['type']=='Member'){
-                mem += `
                 <div class="text-center mem-data p-3 m-3 col-12 col-sm-12 col-md-10 col-lg-10 col-xl-10">
                 <h4>Flat Number</h4>
                     <p>${data.flat_address}</p>    
@@ -86,9 +88,9 @@ function search_vehicle(){
                 `
             }else{
                 mem += `
-                <div class="text-center mem-data p-3 m-3 col-12 col-sm-12 col-md-10 col-lg-10 col-xl-10">
+                <div class="text-center mem-data p-3 m-3 col-12 col-sm-12 col-md-5 col-lg-5 col-xl-5">
                     <h4>Purpose</h4>
-                    <p>${data.flat_address}</p>    
+                    <p>${data.purpose}</p>    
                 </div>
                 `
             }

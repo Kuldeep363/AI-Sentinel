@@ -13,7 +13,8 @@
 <div class="row m-0 bg-primary justify-content-between" id="navbar">
     <div class="logo m-2 ml-5">
         <a href="/">
-            <h2>AI Sentinel</h2>
+          <img src="{% static 'ai/assets/as-logo.png' %}" alt="as logo" style="width: 65px;">
+          <span class="heading">AI Sentinel</span>
         </a>
     </div>
     <div class="menu-items d-flex mr-5" >
@@ -62,7 +63,7 @@
 
   <div class=" mt-5 mb-2 d-flex justify-content-between">
     <div>
-        <h2  class="ml-2">Members details</h2>
+        <h2  class="ml-2 heading">Members details</h2>
     </div>
     <div class="mr-5">
         <button id="add-member" class="button" data-toggle="modal" data-target="#addMemberModal">Add Member +</button>
@@ -91,7 +92,7 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Add Member</h5>
+          <h5 class="modal-title heading" id="exampleModalLabel">Add Member</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -146,7 +147,7 @@
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Member Data</h5>
+          <h5 class="modal-title heading" id="exampleModalLabel">Member Data</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
