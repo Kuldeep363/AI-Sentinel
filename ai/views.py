@@ -71,12 +71,6 @@ def get_image(request):
     return Response({"permission":permission,"number":number_plate})
 
 
-@api_view(['GET'])
-def get_members(request):
-    members = Members.objects.all()
-    serializer = memberSerializer(members,many  =True)
-    return Response(serializer.data)
-
 @api_view(['POST'])
 def add_vehicle_entry(request):
     data = request.data
@@ -177,40 +171,3 @@ def exit_details(request):
     return Response({'permission':True})
 
 
-@api_view(['POST'])
-def search_vehicle(request):
-    img = request.data['img']
-
-    payload = { 'isOverlayRequired':True,
-                'apikey':'fac41c9c0888957',
-                'language':'eng',
-                'scale': True,
-                'OCREngine':2,
-                'base64Image':img
-            }
-    r = requests.post('https://api.ocr.space/parse/image',
-    data=payload,
-    )
-
-    # print(r.content.decode())
-    number = json.loads(r.content.decode())
-    number = number['ParsedResults'][0]['TextOverlay']['Lines'][0]['Words'][0]['WordText']
-    # number = request.data['number']
-    print(number)
-    
-    try:
-        mem = Members.objects.get(car_number=number)
-        serializer = memberSerializer(mem)
-        data = serializer.data
-        data['type'] = 'Member'
-        return Response(data)
-    except Exception as e:
-        print(e)
-        vehicle = Vehicles.objects.filter(car_number=number,exit_timing__isnull=True)
-        if vehicle:
-            serializer = vehicleSerializer(vehicle[0])
-            data = serializer.data
-            data['type'] = 'Visitor'
-        else:
-            data = {'type':'unknown'}
-        return Response(data)
