@@ -18,6 +18,7 @@
     }
 csrf_token = getCookie('csrftoken')
 
+// get members data
 function get_members_data(){
     let url = 'http://127.0.0.1:8000/api/get-members-data'
 
@@ -60,7 +61,7 @@ function get_members_data(){
         
     }
     
-
+// add member
 function add_members_entry(number){
     let url = 'http://127.0.0.1:8000/api/add-members-data'
 
@@ -102,6 +103,7 @@ function add_members_entry(number){
     })
 }
 
+// serach member
 function search_member(e){
     e.preventDefault()
     let url = 'http://127.0.0.1:8000/api/search-member'
