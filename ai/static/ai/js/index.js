@@ -170,6 +170,35 @@
         }
 
         // add visitors enrty
+        function add_visitors_entry(){
+            let url = 'http://127.0.0.1:8000/api/add-entry'
+
+            let type = (document.querySelector('input[name="type"]:checked').value == 'true')
+            
+            fetch(url,{
+                method:'POST',
+                headers:{
+                    'Content-type':'application/json',
+                    'X-CSRFToken':csrf_token
+                },
+                body:JSON.stringify({
+                    'number':document.getElementById('car-number').value,
+                    name:document.getElementById('name').value,
+                    phone:document.getElementById('phone').value,
+                    purpose:document.getElementById('purpose').value,
+                    type:type
+                })
+            })
+            .then((resp)=>resp.json())
+            .then((data)=>{
+                console.log(data['action'])
+                document.getElementById('entry-msg').style.top = '10px'
+                setTimeout(()=>{
+                    document.getElementById('entry-msg').style.top = '-50px'
+                },4000)
+                get_vehicles_data()
+            })
+        }
         
 
         // add exit details
