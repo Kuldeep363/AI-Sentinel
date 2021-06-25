@@ -107,6 +107,31 @@
         let car_number = ''
 
         // add member entry
+        function add_members_entry(number){
+            let url = 'http://127.0.0.1:8000/api/add-entry'
+
+            
+            fetch(url,{
+                method:'POST',
+                headers:{
+                    'Content-type':'application/json',
+                    'X-CSRFToken':csrf_token
+                },
+                body:JSON.stringify({
+                    'number':number,
+                })
+            })
+            .then((resp)=>resp.json())
+            .then((data)=>{
+                console.log(data['action'])
+                document.getElementById('enter').click()
+                document.getElementById('entry-msg').style.top = '10px'
+                setTimeout(()=>{
+                    document.getElementById('entry-msg').style.top = '-50px'
+                },4000)
+                get_vehicles_data()
+            })
+        }
         
 
         // get car number
