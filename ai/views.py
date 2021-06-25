@@ -28,6 +28,12 @@ def scanner(request):
 
 
 @api_view(['GET'])
+def get_members(request):
+    members = Members.objects.all()
+    serializer = memberSerializer(members,many  =True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
 def viewData(request):
     vehicles = Vehicles.objects.all().order_by('-id')
     serializer = vehicleSerializer(vehicles,many = True)
