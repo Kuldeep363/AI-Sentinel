@@ -1,0 +1,50 @@
+{% extends 'ai/base.html' %}
+{% load static %}
+
+{% block links %}
+    <link rel="stylesheet" href="{% static 'ai/css/index.css' %}">
+{% endblock %}
+
+{% block page_title %} <title>Sacn - AI Sentinel</title>  {% endblock %}
+
+{% block container %}
+<!-- Navbar -->
+<div class="row m-0 bg-primary justify-content-between" id="navbar">
+    <div class="logo m-2 ml-5">
+        <a href="/">
+            <img src="{% static 'ai/assets/as-logo.png' %}" alt="as logo" style="width: 65px;">
+            <span class="heading">AI Sentinel</span>
+        </a>
+    </div>
+    <div class="menu-items d-flex mr-5" >
+        <div class="mr-5">
+            <a href="/">
+                Home
+            </a>
+        </div>
+        <div class="mr-5">
+            <a href="/members">
+                Members
+            </a>
+        </div>
+        <div >
+            <a href="/scan">
+                <svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g clip-path="url(#clip0)">
+                    <rect y="1" width="30" height="30" rx="15" fill="white" fill-opacity="0.3"/>
+                    <path d="M7.8 9.77778V13.6667H9.4V10.5556H12.6V9H8.6C8.1576 9 7.8 9.34767 7.8 9.77778ZM22.2 13.6667V9.77778C22.2 9.34767 21.8424 9 21.4 9H17.4V10.5556H20.6V13.6667H22.2ZM20.6 21.4444H17.4V23H21.4C21.8424 23 22.2 22.6523 22.2 22.2222V18.3333H20.6V21.4444ZM12.6 23V21.4444H9.4V18.3333H7.8V22.2222C7.8 22.6523 8.1576 23 8.6 23H12.6ZM7 15.2222H23V16.7778H7V15.2222Z" fill="#fefefe"/>
+                    </g>
+                    <defs>
+                    <clipPath id="clip0">
+                    <rect width="30" height="30" fill="white" transform="translate(0.1875 0.943359)"/>
+                    </clipPath>
+                    </defs>
+                </svg>                               
+            </a>
+        </div>
+    </div>
+
+</div>
+
+
+{% endblock %}

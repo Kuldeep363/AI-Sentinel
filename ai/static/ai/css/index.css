@@ -100,3 +100,10 @@ a{
     color: #fefefe!important;
     font-weight: bolder;
 }
+
+.border-btn{
+    border: 2px solid #4285f4;
+    color: #4285f4!important;
+    background-color: transparent;
+    box-shadow: none;
+}

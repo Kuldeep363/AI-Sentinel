@@ -14,6 +14,13 @@ from django.views.decorators.csrf import csrf_exempt
 import requests
 import json
 
+import os
+from twilio.rest import Client
+
+account_sid = 'ACf2830af164b92a0eeefcb20f3325a3ec'
+auth_token = 'f19390382523e3b7d58eaf15872b2d1d'
+client = Client(account_sid, auth_token)
+
 # Create your views here.
 def home(request):
     return render(request,'ai/index.html')
@@ -25,6 +32,25 @@ def members(request):
 
 def scanner(request):
     return render(request,'ai/scanner.html')
+
+
+def vehicle_details(request):
+    return render(request,'ai/vehicle_details.html')
+
+
+
+# send sms
+
+
+def send_sms(msg,to):
+    message = client.messages.create(
+                     body=msg,
+                     from_='+18029928454',
+                     to=to
+                 )
+    return message.sid
+
+
 
 
 @api_view(['GET'])
@@ -96,6 +122,9 @@ def add_vehicle_entry(request):
         mem = True
         car_type = member.four_wheeler
         Vehicles(owner=owner,car_number=number,entry_date=date,entry_timing=entry_time,phone_number=phone,member=mem,four_wheeler=car_type).save()
+        msg = 'Hey '+ str(member.owner)+"! Your car no. "+member.car_number + ' entered in the scoiety at '+ entry_time+' \n - Team AI Sentinel'
+        to = '+91'+member.phone_number
+        r = send_sms(msg,to)
     except Exception as e:
         print(e)
         owner = data['name']
@@ -158,19 +187,24 @@ def exit_details(request):
     number = number['ParsedResults'][0]['TextOverlay']['Lines'][0]['Words'][0]['WordText']
     print(number)
 
+    
+    now = datetime.now()
+    date = now.strftime("%Y-%m-%d")
+    time = now.strftime("%H:%M:%S")
 
 
     try:
         mem = Members.objects.get(car_number=number)
         if not mem.exit_allow:
             return Response({'permission':False})
+        else:
+            msg = 'Hey '+mem.owner+'! Your car exits the scoiety now at '+time+'\n Team AI Sentinel'
+            to = mem.phone_number
+            r = send_sms(msg,to)
     except:
         pass
     vehicle = Vehicles.objects.filter(car_number=number,exit_timing__isnull=True)
     if vehicle:
-        now = datetime.now()
-        date = now.strftime("%Y-%m-%d")
-        time = now.strftime("%H:%M:%S")
         vehicle[0].exit_date = date
         vehicle[0].exit_timing = time
         vehicle[0].save()
@@ -214,3 +248,16 @@ def search_vehicle(request):
         else:
             data = {'type':'unknown'}
         return Response(data)
+
+
+@api_view(['POST'])
+def get_details(request):
+    number = request.data['number']
+    vehicle = Vehicles.objects.filter(car_number=number)
+    if vehicle:
+        serializer = vehicleSerializer(vehicle,many=True)
+        data = serializer.data
+    else:
+        data = []
+    return Response(data)
+
